@@ -32,3 +32,13 @@ samples, guidance on mobile development, and a full API reference.
 - 요청 부분은 async-await 으로 만드는게 낫다.
 - json 데이터는 list, map으로 변환필요
   - jsonDecode() 함수 사용
+- print로 체크할 때는 함수 안에서 출력하자.
+- http request는 시간이 걸린다.
+  - 데이터가 채워지기 전에 접근하면 warning이 발생한다.
+  - 실제 데이터가 있으면 사용하도록 한다. -> 조건부로 사용 data.isNotEmpty
+  - 없으면 로딩중 표시
+  - FutureBuilder도 있는데 이것은 한번 데이터 추가 후 변경안되는 경우에 유용하다.
+  - 다른 경우에는 그냥 if-else 분기처리하는 것이 낫다.
+- 서버 다운, 요청경로 이상 -> 예외처리 필요
+  - statusCode 확인
+- http 보다는 Dio 패키지를 추천 -> 좀 더 편하다.

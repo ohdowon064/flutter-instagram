@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:instagram/style.dart' as style;
+import 'package:loading_indicator/loading_indicator.dart';
 
 void main() {
   runApp(
@@ -21,13 +22,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int currentTab = 0; // 홈, 샵
-  var posts;
+  var posts = [];
 
   getData() async {
     var result = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
-    posts = jsonDecode(result.body);
-    print(posts);
-    print(posts.length);
+    if (result.statusCode == 200) {
+      setState(() {
+        posts = jsonDecode(result.body);
+      });
+    } else {
+      print("error");
+    }
   }
 
   @override
@@ -77,24 +82,28 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomeTab extends StatelessWidget {
-  HomeTab({Key? key, this.posts}) : super(key: key);
-  var posts;
+  const HomeTab({Key? key, this.posts}) : super(key: key);
+  final posts;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(posts[index]['image']),
-            Text('좋아요${posts[index]['likes']}개'),
-            Text(posts[index]['user']),
-            Text(posts[index]['content']),
-          ],
-        );
-      },
-    );
+    if (posts.isNotEmpty) {
+      return ListView.builder(
+        itemCount: posts.length,
+        itemBuilder: (context, index) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.network(posts[index]['image']),
+              Text('좋아요${posts[index]['likes']}개'),
+              Text(posts[index]['user']),
+              Text(posts[index]['content']),
+            ],
+          );
+        },
+      );
+    }else {
+      return LoadingIndicator(indicatorType: Indicator.ballPulse);
+    }
   }
 }
