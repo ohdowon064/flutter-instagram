@@ -5,18 +5,24 @@ void main() {
     MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          color: Colors.grey,
-          actionsIconTheme: IconThemeData(color: Colors.red),
+          iconTheme: IconThemeData(
+            color: Colors.black,
+            size: 40,
+          ),
+          color: Colors.white,
         ),
-        iconTheme: IconThemeData(color: Colors.blue),
-        textTheme: TextTheme( // TextTheme은 TextStyle을 변수로 만들어서 해당 위치에서 사용하는게 낫다.
-          bodyText2: TextStyle(color: Colors.green),
-        ),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       home: MyApp(),
     ),
   );
 }
+
+const appBarTextStyle = TextStyle(
+  color: Colors.black,
+  fontSize: 20,
+  fontWeight: FontWeight.w500,
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -24,8 +30,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [Icon(Icons.star)]),
-      body: Text("안녕"),
+      appBar: AppBar(
+        centerTitle: false,
+        actions: [Icon(Icons.add_box_outlined)],
+        title: Text(
+          'Instagram',
+          style: appBarTextStyle,
+        ),
+      ),
     );
   }
 }
