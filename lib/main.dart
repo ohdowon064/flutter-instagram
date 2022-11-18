@@ -32,7 +32,12 @@ class MyApp extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        actions: [Icon(Icons.add_box_outlined)],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_box_outlined),
+            onPressed: () {},
+          )
+        ],
         title: Text(
           'Instagram',
           style: appBarTextStyle,
