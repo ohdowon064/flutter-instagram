@@ -21,5 +21,3 @@ const appBarTextStyle = TextStyle(
   fontSize: 20,
   fontWeight: FontWeight.w500,
 );
-
-var _privateVariable; // 언더바를 붙이면 다른 파일에서 못 쓰는 private 변수(함수, 클래스)가 된다.
