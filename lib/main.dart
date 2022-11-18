@@ -1,28 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:instagram/style.dart' as style;
 
 void main() {
   runApp(
     MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          actionsIconTheme: IconThemeData(
-            color: Colors.black,
-            size: 40,
-          ),
-          color: Colors.white,
-        ),
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+      theme: style.themeData,
       home: MyApp(),
     ),
   );
 }
-
-const appBarTextStyle = TextStyle(
-  color: Colors.black,
-  fontSize: 20,
-  fontWeight: FontWeight.w500,
-);
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -40,7 +26,20 @@ class MyApp extends StatelessWidget {
         ],
         title: Text(
           'Instagram',
-          style: appBarTextStyle,
+          style: style.appBarTextStyle,
+        ),
+      ),
+      body: Theme(
+        data: ThemeData(
+          textTheme: TextTheme(
+            bodyText2: TextStyle(
+              color: Colors.blue,
+            ),
+          ),
+        ),
+        child: TextButton(
+          onPressed: () {},
+          child: Text('Hello', style: Theme.of(context).textTheme.bodyText2),
         ),
       ),
     );
