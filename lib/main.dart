@@ -5,7 +5,7 @@ void main() {
     MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          iconTheme: IconThemeData(
+          actionsIconTheme: IconThemeData(
             color: Colors.black,
             size: 40,
           ),
