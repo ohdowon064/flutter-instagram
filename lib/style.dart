@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 
 var themeData = ThemeData(
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-      backgroundColor: Colors.grey,
-    ),
-  ),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.blue,
-    ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: Colors.white,
+    selectedItemColor: Colors.black,
+    unselectedItemColor: Colors.grey,
   ),
   appBarTheme: AppBarTheme(
     actionsIconTheme: IconThemeData(

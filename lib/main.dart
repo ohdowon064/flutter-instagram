@@ -29,18 +29,19 @@ class MyApp extends StatelessWidget {
           style: style.appBarTextStyle,
         ),
       ),
-      body: Theme(
-        data: ThemeData(
-          textTheme: TextTheme(
-            bodyText2: TextStyle(
-              color: Colors.blue,
-            ),
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'home',
           ),
-        ),
-        child: TextButton(
-          onPressed: () {},
-          child: Text('Hello', style: Theme.of(context).textTheme.bodyText2),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag_outlined),
+            label: 'shopping_bag',
+          ),
+        ],
       ),
     );
   }
