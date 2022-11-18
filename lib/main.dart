@@ -1,6 +1,5 @@
-import 'dart:html';
-import 'dart:math';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:instagram/style.dart' as style;
 
@@ -22,6 +21,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int currentTab = 0; // 홈, 샵
+  var posts;
+
+  getData() async {
+    var result = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
+    posts = jsonDecode(result.body);
+    print(posts);
+    print(posts.length);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class _MyAppState extends State<MyApp> {
           style: style.appBarTextStyle,
         ),
       ),
-      body: [HomeTab(), Text("샵탭")][currentTab],
+      body: [HomeTab(posts: posts), Text("샵탭")][currentTab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -64,41 +77,22 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({Key? key}) : super(key: key);
+  HomeTab({Key? key, this.posts}) : super(key: key);
+  var posts;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 3,
+      itemCount: posts.length,
       itemBuilder: (context, index) {
-        return SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Container(
-                color: Colors.black,
-                child: Image.asset(
-                  "bb.jpg",
-                  width: double.infinity,
-                  height: min(MediaQuery.of(context).size.width, 500),
-                ),
-              ),
-              Container(
-                height: 100,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("좋아요 100"),
-                    Text("글쓴이"),
-                    Text("글내용"),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(posts[index]['image']),
+            Text('좋아요${posts[index]['likes']}개'),
+            Text(posts[index]['user']),
+            Text(posts[index]['content']),
+          ],
         );
       },
     );
