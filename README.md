@@ -42,3 +42,12 @@ samples, guidance on mobile development, and a full API reference.
 - 서버 다운, 요청경로 이상 -> 예외처리 필요
   - statusCode 확인
 - http 보다는 Dio 패키지를 추천 -> 좀 더 편하다.
+
+## 스크롤 처리
+- package:flutter/rendering.dart"
+- 스크롤 높이 측정 -> ListView를 갖은 위젯이 stateful 위젯이어야한다.
+- 스크롤 감시 -> addListener() 사용
+  - 필요없으면 제거하는 것이 성능상 좋다.
+- 맨 밑 -> scroll.position.pixels == scroll.position.maxScrollExtent
+  - 스크롤한 거리 == 최대 스크롤 거리
+- 응용 -> 밑으로 스크롤하면 하단바 숨기기

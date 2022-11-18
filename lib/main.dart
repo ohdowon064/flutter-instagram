@@ -81,23 +81,41 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
   const HomeTab({Key? key, this.posts}) : super(key: key);
   final posts;
 
   @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  var scroll = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scroll.addListener(() {
+      if (scroll.position.pixels == scroll.position.maxScrollExtent) {
+        print("맨 밑");
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (posts.isNotEmpty) {
+    if (widget.posts.isNotEmpty) {
       return ListView.builder(
-        itemCount: posts.length,
+        itemCount: widget.posts.length,
+        controller: scroll,
         itemBuilder: (context, index) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(posts[index]['image']),
-              Text('좋아요${posts[index]['likes']}개'),
-              Text(posts[index]['user']),
-              Text(posts[index]['content']),
+              Image.network(widget.posts[index]['image']),
+              Text('좋아요${widget.posts[index]['likes']}개'),
+              Text(widget.posts[index]['user']),
+              Text(widget.posts[index]['content']),
             ],
           );
         },
