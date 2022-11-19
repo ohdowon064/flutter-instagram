@@ -1,5 +1,4 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/style.dart' as style;
 import 'package:loading_indicator/loading_indicator.dart';
@@ -23,15 +22,28 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int currentTab = 0; // 홈, 샵
   var posts = [];
+  var dio = Dio();
 
   getData() async {
-    var result = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
-    if (result.statusCode == 200) {
+    try{
+      var result = await dio.get('https://codingapple1.github.io/app/data.json');
       setState(() {
-        posts = jsonDecode(result.body);
+        posts = result.data;
       });
-    } else {
-      print("error");
+    } catch(e){
+      print("error: $e");
+    }
+  }
+
+  getMoreData(index) async {
+    try{
+      var result = await dio.get('https://codingapple1.github.io/app/more$index.json');
+      print(result.data);
+      setState(() {
+        posts.add(result.data);
+      });
+    }catch(e) {
+      print("error: $e");
     }
   }
 
@@ -57,7 +69,7 @@ class _MyAppState extends State<MyApp> {
           style: style.appBarTextStyle,
         ),
       ),
-      body: [HomeTab(posts: posts), Text("샵탭")][currentTab],
+      body: [HomeTab(posts: posts, getMoreData: getMoreData,), Text("샵탭")][currentTab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -82,8 +94,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({Key? key, this.posts}) : super(key: key);
+  const HomeTab({Key? key, this.posts, this.getMoreData}) : super(key: key);
   final posts;
+  final getMoreData;
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -91,13 +104,21 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   var scroll = ScrollController();
+  var fetchIndex = 1;
+  static const maxFetchIndex = 3;
 
   @override
   void initState() {
     super.initState();
     scroll.addListener(() {
       if (scroll.position.pixels == scroll.position.maxScrollExtent) {
-        print("맨 밑");
+        if (fetchIndex < maxFetchIndex) {
+          print("맨밑도달 ====> 데이터 추가로 가져옴");
+          widget.getMoreData(fetchIndex);
+          fetchIndex++;
+        }else {
+          print('맨밑이지만 데이터 안가져옴');
+        }
       }
     });
   }
