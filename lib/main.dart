@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:instagram/style.dart' as style;
 import 'package:loading_indicator/loading_indicator.dart';
 
@@ -23,28 +24,43 @@ class _MyAppState extends State<MyApp> {
   int currentTab = 0; // 홈, 샵
   var posts = [];
   var dio = Dio();
+  var isVisible = true;
 
   getData() async {
-    try{
-      var result = await dio.get('https://codingapple1.github.io/app/data.json');
+    try {
+      var result =
+          await dio.get('https://codingapple1.github.io/app/data.json');
       setState(() {
         posts = result.data;
       });
-    } catch(e){
+    } catch (e) {
       print("error: $e");
     }
   }
 
   getMoreData(index) async {
-    try{
-      var result = await dio.get('https://codingapple1.github.io/app/more$index.json');
+    try {
+      var result =
+          await dio.get('https://codingapple1.github.io/app/more$index.json');
       print(result.data);
       setState(() {
         posts.add(result.data);
       });
-    }catch(e) {
+    } catch (e) {
       print("error: $e");
     }
+  }
+
+  hide() {
+    setState(() {
+      isVisible = false;
+    });
+  }
+
+  show() {
+    setState(() {
+      isVisible = true;
+    });
   }
 
   @override
@@ -69,34 +85,45 @@ class _MyAppState extends State<MyApp> {
           style: style.appBarTextStyle,
         ),
       ),
-      body: [HomeTab(posts: posts, getMoreData: getMoreData,), Text("샵탭")][currentTab],
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        onTap: (tabNumber) {
-          setState(() {
-            currentTab = tabNumber;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_outlined),
-            label: 'shop',
-          ),
-        ],
-      ),
-    );
+      body: [
+        HomeTab(
+          posts: posts,
+          getMoreData: getMoreData,
+          hide: hide,
+          show: show,
+        ),
+        Text("샵탭")
+      ][currentTab],
+      bottomNavigationBar: isVisible ? BottomNavigationBar(
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            onTap: (tabNumber) {
+              setState(() {
+                currentTab = tabNumber;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                label: 'home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_bag_outlined),
+                label: 'shop',
+              ),
+            ],
+          ) : null,
+      );
   }
 }
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({Key? key, this.posts, this.getMoreData}) : super(key: key);
+  const HomeTab({Key? key, this.posts, this.getMoreData, this.hide, this.show})
+      : super(key: key);
   final posts;
   final getMoreData;
+  final hide;
+  final show;
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -116,9 +143,15 @@ class _HomeTabState extends State<HomeTab> {
           print("맨밑도달 ====> 데이터 추가로 가져옴");
           widget.getMoreData(fetchIndex);
           fetchIndex++;
-        }else {
+        } else {
           print('맨밑이지만 데이터 안가져옴');
         }
+      }
+
+      if (scroll.position.userScrollDirection == ScrollDirection.reverse) {
+        widget.hide();
+      } else {
+        widget.show();
       }
     });
   }
@@ -141,7 +174,7 @@ class _HomeTabState extends State<HomeTab> {
           );
         },
       );
-    }else {
+    } else {
       return LoadingIndicator(indicatorType: Indicator.ballPulse);
     }
   }
