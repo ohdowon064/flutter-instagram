@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
 
   uploadPost(post) {
     setState(() {
-      posts.add(post);
+      posts.insert(0, post);
     });
   }
 
