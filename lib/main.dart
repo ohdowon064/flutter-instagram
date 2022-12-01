@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram/style.dart' as style;
 import 'package:loading_indicator/loading_indicator.dart';
 
@@ -25,6 +28,7 @@ class _MyAppState extends State<MyApp> {
   var posts = [];
   var dio = Dio();
   var isVisible = true;
+  var userImage;
 
   getData() async {
     try {
@@ -77,11 +81,16 @@ class _MyAppState extends State<MyApp> {
         actions: [
           IconButton(
             icon: Icon(Icons.add_box_outlined),
-            onPressed: () {
+            onPressed: () async {
+              var picker = ImagePicker();
+              var image = await picker.pickImage(source: ImageSource.gallery);
+              setState(() {
+                userImage = File(image!.path);
+              });
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Upload(),
+                  builder: (context) => Upload(userImage: userImage,),
                 ),
               );
             },
@@ -191,7 +200,8 @@ class _HomeTabState extends State<HomeTab> {
 
 
 class Upload extends StatelessWidget {
-  const Upload({Key? key}) : super(key: key);
+  const Upload({Key? key, this.userImage}) : super(key: key);
+  final userImage;
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +210,8 @@ class Upload extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("이미지 업로드 화면"),
+          Image.file(userImage),
+          TextField(),
           IconButton(onPressed: () {
             Navigator.pop(context);
           }, icon: Icon(Icons.close)),
