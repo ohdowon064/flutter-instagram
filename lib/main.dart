@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
             icon: Icon(Icons.add_box_outlined),
             onPressed: () async {
               var picker = ImagePicker();
-              var image = await picker.pickImage(source: ImageSource.gallery);
+              var image = await picker.pickImage(source: ImageSource.gallery,  maxHeight: 500, maxWidth: 600);
               setState(() {
                 userImage = File(image!.path);
               });
