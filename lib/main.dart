@@ -77,7 +77,14 @@ class _MyAppState extends State<MyApp> {
         actions: [
           IconButton(
             icon: Icon(Icons.add_box_outlined),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Upload(),
+                ),
+              );
+            },
           )
         ],
         title: Text(
@@ -94,26 +101,28 @@ class _MyAppState extends State<MyApp> {
         ),
         Text("샵탭")
       ][currentTab],
-      bottomNavigationBar: isVisible ? BottomNavigationBar(
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            onTap: (tabNumber) {
-              setState(() {
-                currentTab = tabNumber;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                label: 'home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag_outlined),
-                label: 'shop',
-              ),
-            ],
-          ) : null,
-      );
+      bottomNavigationBar: isVisible
+          ? BottomNavigationBar(
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              onTap: (tabNumber) {
+                setState(() {
+                  currentTab = tabNumber;
+                });
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  label: 'home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_bag_outlined),
+                  label: 'shop',
+                ),
+              ],
+            )
+          : null,
+    );
   }
 }
 
@@ -177,5 +186,26 @@ class _HomeTabState extends State<HomeTab> {
     } else {
       return LoadingIndicator(indicatorType: Indicator.ballPulse);
     }
+  }
+}
+
+
+class Upload extends StatelessWidget {
+  const Upload({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("이미지 업로드 화면"),
+          IconButton(onPressed: () {
+            Navigator.pop(context);
+          }, icon: Icon(Icons.close)),
+        ],
+      )
+    );
   }
 }
