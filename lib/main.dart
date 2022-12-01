@@ -8,7 +8,12 @@ void main() {
   runApp(
     MaterialApp(
       theme: style.themeData,
-      home: MyApp(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => Text("홈"),
+        "/login": (context) => Text("로그인"),
+        "/signup": (context) => Text("회원가입"),
+      },
     ),
   );
 }
