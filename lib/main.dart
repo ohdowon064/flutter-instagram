@@ -9,7 +9,7 @@ void main() {
     MaterialApp(
       theme: style.themeData,
       initialRoute: "/",
-      routes: {
+      routes: { // home와 함께 쓸 수 없다.
         "/": (context) => Text("홈"),
         "/login": (context) => Text("로그인"),
         "/signup": (context) => Text("회원가입"),
