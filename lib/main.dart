@@ -30,6 +30,12 @@ class _MyAppState extends State<MyApp> {
   var isVisible = true;
   var userImage;
 
+  uploadPost(post) {
+    setState(() {
+      posts.add(post);
+    });
+  }
+
   getData() async {
     try {
       var result =
@@ -90,7 +96,7 @@ class _MyAppState extends State<MyApp> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Upload(userImage: userImage,),
+                  builder: (context) => Upload(userImage: userImage, uploadPost: uploadPost),
                 ),
               );
             },
@@ -184,7 +190,7 @@ class _HomeTabState extends State<HomeTab> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(widget.posts[index]['image']),
+              widget.posts[index]['image'].toString().startsWith("http") ? Image.network(widget.posts[index]['image']) : Image.file(widget.posts[index]['image']),
               Text('좋아요${widget.posts[index]['likes']}개'),
               Text(widget.posts[index]['user']),
               Text(widget.posts[index]['content']),
@@ -199,9 +205,19 @@ class _HomeTabState extends State<HomeTab> {
 }
 
 
-class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage}) : super(key: key);
+class Upload extends StatefulWidget {
+  const Upload({Key? key, this.userImage, this.uploadPost}) : super(key: key);
   final userImage;
+  final uploadPost;
+
+  @override
+  State<Upload> createState() => _UploadState();
+}
+
+class _UploadState extends State<Upload> {
+  var post;
+  var user;
+  var content;
 
   @override
   Widget build(BuildContext context) {
@@ -210,11 +226,38 @@ class Upload extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.file(userImage),
-          TextField(),
+          Image.file(widget.userImage),
+          TextField(
+            decoration: InputDecoration(
+              hintText: '이름을 입력하세요.',
+            ),
+            onChanged: (text) {
+              user = text;
+            },
+          ),
+          TextField(
+            decoration: InputDecoration(
+              hintText: '내용을 입력하세요',
+            ),
+            onChanged: (text) {
+              content = text;
+            },
+          ),
           IconButton(onPressed: () {
             Navigator.pop(context);
           }, icon: Icon(Icons.close)),
+          TextButton(onPressed: () {
+            setState(() {
+              post = {
+                'image': widget.userImage,
+                'likes': 0,
+                'user': user,
+                'content': content,
+              };
+            });
+            widget.uploadPost(post);
+            Navigator.pop(context);
+          }, child: Text('업로드'))
         ],
       )
     );
