@@ -215,7 +215,7 @@ class _HomeTabState extends State<HomeTab> {
                       PageRouteBuilder(
                         pageBuilder: (context, ani, ani2) => Profile(),
                         transitionsBuilder: (c, a1, a2, child) =>
-                            FadeTransition(opacity: a1, child: child),
+                            SlideTransition(position: Tween(begin: Offset(0, -1), end: Offset(0, 0)).animate(a1), child: child),
                         transitionDuration: Duration(milliseconds: 500),
                       ),
                     );
