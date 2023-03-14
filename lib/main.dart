@@ -190,7 +190,9 @@ class _HomeTabState extends State<HomeTab> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              widget.posts[index]['image'].toString().startsWith("http") ? Image.network(widget.posts[index]['image']) : Image.file(widget.posts[index]['image']),
+              widget.posts[index]['image'].runtimeType == String
+                  ? Image.network(widget.posts[index]['image'])
+                  : Image.file(widget.posts[index]['image']),
               Text('좋아요${widget.posts[index]['likes']}개'),
               Text(widget.posts[index]['user']),
               Text(widget.posts[index]['content']),
