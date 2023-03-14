@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram/style.dart' as style;
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(
@@ -29,6 +31,13 @@ class _MyAppState extends State<MyApp> {
   var dio = Dio();
   var isVisible = true;
   var userImage;
+
+  saveData() async {
+    var storage = await SharedPreferences.getInstance();
+    var map = {'age': 20};
+    storage.setString('map', jsonEncode(map));
+    print(jsonDecode(storage.getString('map')!)['age']);
+  }
 
   uploadPost(post) {
     setState(() {
@@ -76,6 +85,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    saveData();
     getData();
   }
 
