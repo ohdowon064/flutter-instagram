@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
@@ -99,14 +100,16 @@ class _MyAppState extends State<MyApp> {
             icon: Icon(Icons.add_box_outlined),
             onPressed: () async {
               var picker = ImagePicker();
-              var image = await picker.pickImage(source: ImageSource.gallery,  maxHeight: 500, maxWidth: 600);
+              var image = await picker.pickImage(
+                  source: ImageSource.gallery, maxHeight: 500, maxWidth: 600);
               setState(() {
                 userImage = File(image!.path);
               });
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Upload(userImage: userImage, uploadPost: uploadPost),
+                  builder: (context) =>
+                      Upload(userImage: userImage, uploadPost: uploadPost),
                 ),
               );
             },
@@ -204,7 +207,19 @@ class _HomeTabState extends State<HomeTab> {
                   ? Image.network(widget.posts[index]['image'])
                   : Image.file(widget.posts[index]['image']),
               Text('좋아요${widget.posts[index]['likes']}개'),
-              Text(widget.posts[index]['user']),
+              GestureDetector(
+                  child: Text(widget.posts[index]['user']),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, ani, ani2) => Profile(),
+                        transitionsBuilder: (c, a1, a2, child) =>
+                            FadeTransition(opacity: a1, child: child),
+                        transitionDuration: Duration(milliseconds: 500),
+                      ),
+                    );
+                  }),
               Text(widget.posts[index]['content']),
             ],
           );
@@ -215,7 +230,6 @@ class _HomeTabState extends State<HomeTab> {
     }
   }
 }
-
 
 class Upload extends StatefulWidget {
   const Upload({Key? key, this.userImage, this.uploadPost}) : super(key: key);
@@ -234,44 +248,56 @@ class _UploadState extends State<Upload> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.file(widget.userImage),
-          TextField(
-            decoration: InputDecoration(
-              hintText: '이름을 입력하세요.',
+        appBar: AppBar(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.file(widget.userImage),
+            TextField(
+              decoration: InputDecoration(
+                hintText: '이름을 입력하세요.',
+              ),
+              onChanged: (text) {
+                user = text;
+              },
             ),
-            onChanged: (text) {
-              user = text;
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(
-              hintText: '내용을 입력하세요',
+            TextField(
+              decoration: InputDecoration(
+                hintText: '내용을 입력하세요',
+              ),
+              onChanged: (text) {
+                content = text;
+              },
             ),
-            onChanged: (text) {
-              content = text;
-            },
-          ),
-          IconButton(onPressed: () {
-            Navigator.pop(context);
-          }, icon: Icon(Icons.close)),
-          TextButton(onPressed: () {
-            setState(() {
-              post = {
-                'image': widget.userImage,
-                'likes': 0,
-                'user': user,
-                'content': content,
-              };
-            });
-            widget.uploadPost(post);
-            Navigator.pop(context);
-          }, child: Text('업로드'))
-        ],
-      )
-    );
+            IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.close)),
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    post = {
+                      'image': widget.userImage,
+                      'likes': 0,
+                      'user': user,
+                      'content': content,
+                    };
+                  });
+                  widget.uploadPost(post);
+                  Navigator.pop(context);
+                },
+                child: Text('업로드'))
+          ],
+        ));
+  }
+}
+
+class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(), body: Text("프로필페이지"));
   }
 }
