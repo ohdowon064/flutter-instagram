@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
   getData() async {
     try {
       var result =
-      await dio.get('https://codingapple1.github.io/app/data.json');
+          await dio.get('https://codingapple1.github.io/app/data.json');
       setState(() {
         posts = result.data;
       });
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   getMoreData(index) async {
     try {
       var result =
-      await dio.get('https://codingapple1.github.io/app/more$index.json');
+          await dio.get('https://codingapple1.github.io/app/more$index.json');
       print(result.data);
       setState(() {
         posts.add(result.data);
@@ -135,24 +135,24 @@ class _MyAppState extends State<MyApp> {
       ][currentTab],
       bottomNavigationBar: isVisible
           ? BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        onTap: (tabNumber) {
-          setState(() {
-            currentTab = tabNumber;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_outlined),
-            label: 'shop',
-          ),
-        ],
-      )
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              onTap: (tabNumber) {
+                setState(() {
+                  currentTab = tabNumber;
+                });
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  label: 'home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_bag_outlined),
+                  label: 'shop',
+                ),
+              ],
+            )
           : null,
     );
   }
@@ -221,7 +221,7 @@ class _HomeTabState extends State<HomeTab> {
                         transitionsBuilder: (c, a1, a2, child) =>
                             SlideTransition(
                                 position: Tween(
-                                    begin: Offset(0, -1), end: Offset(0, 0))
+                                        begin: Offset(0, -1), end: Offset(0, 0))
                                     .animate(a1),
                                 child: child),
                         transitionDuration: Duration(milliseconds: 500),
@@ -303,11 +303,19 @@ class _UploadState extends State<Upload> {
 }
 
 class Store1 extends ChangeNotifier {
-  var name = 'asdfasdfasdf';
+  var name = "john kim";
+  var follower = 0;
+  var clicked = false;
 
-  changeName() {
-    name = "john park";
-    notifyListeners(); // state 변경 후 재렌더링
+  follow() {
+    if (!clicked) {
+      follower++;
+      clicked = true;
+    } else {
+      follower--;
+      clicked = false;
+    }
+    notifyListeners();
   }
 }
 
@@ -317,20 +325,25 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(
-              context
-                  .watch<Store1>()
-                  .name,
-              style: style.appBarTextStyle,
-            )),
-        body: Column(
-          children: [
-            ElevatedButton(onPressed: () {
-              context.read<Store1>().changeName();
-            }, child: Text("버튼"))
-          ],
-        ),
+      appBar: AppBar(
+          title: Text(
+        context.watch<Store1>().name,
+        style: style.appBarTextStyle,
+      )),
+      body: Row(
+        children: [
+          Icon(Icons.person),
+          Text('팔로워 ${context.watch<Store1>().follower}명'),
+          ElevatedButton(
+            onPressed: () {
+              context.read<Store1>().follow();
+            },
+            child:
+                !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
+          ),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      ),
     );
   }
 }
