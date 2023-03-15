@@ -9,12 +9,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:instagram/style.dart' as style;
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    MaterialApp(
-      theme: style.themeData,
-      home: MyApp(),
+    ChangeNotifierProvider(
+      create: (context) => Store1(),
+      child: MaterialApp(
+        theme: style.themeData,
+        home: MyApp(),
+      ),
     ),
   );
 }
@@ -49,7 +53,7 @@ class _MyAppState extends State<MyApp> {
   getData() async {
     try {
       var result =
-          await dio.get('https://codingapple1.github.io/app/data.json');
+      await dio.get('https://codingapple1.github.io/app/data.json');
       setState(() {
         posts = result.data;
       });
@@ -61,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   getMoreData(index) async {
     try {
       var result =
-          await dio.get('https://codingapple1.github.io/app/more$index.json');
+      await dio.get('https://codingapple1.github.io/app/more$index.json');
       print(result.data);
       setState(() {
         posts.add(result.data);
@@ -131,24 +135,24 @@ class _MyAppState extends State<MyApp> {
       ][currentTab],
       bottomNavigationBar: isVisible
           ? BottomNavigationBar(
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              onTap: (tabNumber) {
-                setState(() {
-                  currentTab = tabNumber;
-                });
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined),
-                  label: 'home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_bag_outlined),
-                  label: 'shop',
-                ),
-              ],
-            )
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        onTap: (tabNumber) {
+          setState(() {
+            currentTab = tabNumber;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag_outlined),
+            label: 'shop',
+          ),
+        ],
+      )
           : null,
     );
   }
@@ -215,7 +219,11 @@ class _HomeTabState extends State<HomeTab> {
                       PageRouteBuilder(
                         pageBuilder: (context, ani, ani2) => Profile(),
                         transitionsBuilder: (c, a1, a2, child) =>
-                            SlideTransition(position: Tween(begin: Offset(0, -1), end: Offset(0, 0)).animate(a1), child: child),
+                            SlideTransition(
+                                position: Tween(
+                                    begin: Offset(0, -1), end: Offset(0, 0))
+                                    .animate(a1),
+                                child: child),
                         transitionDuration: Duration(milliseconds: 500),
                       ),
                     );
@@ -248,48 +256,58 @@ class _UploadState extends State<Upload> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.file(widget.userImage),
-            TextField(
-              decoration: InputDecoration(
-                hintText: '이름을 입력하세요.',
-              ),
-              onChanged: (text) {
-                user = text;
-              },
+      appBar: AppBar(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.file(widget.userImage),
+          TextField(
+            decoration: InputDecoration(
+              hintText: '이름을 입력하세요.',
             ),
-            TextField(
-              decoration: InputDecoration(
-                hintText: '내용을 입력하세요',
-              ),
-              onChanged: (text) {
-                content = text;
-              },
+            onChanged: (text) {
+              user = text;
+            },
+          ),
+          TextField(
+            decoration: InputDecoration(
+              hintText: '내용을 입력하세요',
             ),
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.close)),
-            TextButton(
-                onPressed: () {
-                  setState(() {
-                    post = {
-                      'image': widget.userImage,
-                      'likes': 0,
-                      'user': user,
-                      'content': content,
-                    };
-                  });
-                  widget.uploadPost(post);
-                  Navigator.pop(context);
-                },
-                child: Text('업로드'))
-          ],
-        ));
+            onChanged: (text) {
+              content = text;
+            },
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.close)),
+          TextButton(
+              onPressed: () {
+                setState(() {
+                  post = {
+                    'image': widget.userImage,
+                    'likes': 0,
+                    'user': user,
+                    'content': content,
+                  };
+                });
+                widget.uploadPost(post);
+                Navigator.pop(context);
+              },
+              child: Text('업로드'))
+        ],
+      ),
+    );
+  }
+}
+
+class Store1 extends ChangeNotifier {
+  var name = 'asdfasdfasdf';
+
+  changeName() {
+    name = "john park";
+    notifyListeners(); // state 변경 후 재렌더링
   }
 }
 
@@ -298,6 +316,21 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: Text("프로필페이지"));
+    return Scaffold(
+        appBar: AppBar(
+            title: Text(
+              context
+                  .watch<Store1>()
+                  .name,
+              style: style.appBarTextStyle,
+            )),
+        body: Column(
+          children: [
+            ElevatedButton(onPressed: () {
+              context.read<Store1>().changeName();
+            }, child: Text("버튼"))
+          ],
+        ),
+    );
   }
 }
