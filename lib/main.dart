@@ -13,8 +13,11 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => Store1(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (c) => Store1()),
+        ChangeNotifierProvider(create: (c) => Store2()),
+      ],
       child: MaterialApp(
         theme: style.themeData,
         home: MyApp(),
@@ -317,6 +320,10 @@ class Store1 extends ChangeNotifier {
     }
     notifyListeners();
   }
+}
+
+class Store2 extends ChangeNotifier {
+
 }
 
 class Profile extends StatelessWidget {
