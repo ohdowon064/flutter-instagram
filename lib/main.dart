@@ -10,6 +10,7 @@ import 'package:instagram/style.dart' as style;
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(
@@ -306,9 +307,15 @@ class _UploadState extends State<Upload> {
 }
 
 class Store1 extends ChangeNotifier {
-  var name = "john kim";
   var follower = 0;
   var clicked = false;
+  var profileImage = [];
+
+  getData() async {
+    var result = await http.get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
+    profileImage = jsonDecode(result.body);
+    notifyListeners();
+  }
 
   follow() {
     if (!clicked) {
@@ -323,7 +330,7 @@ class Store1 extends ChangeNotifier {
 }
 
 class Store2 extends ChangeNotifier {
-
+  var name = "john kim";
 }
 
 class Profile extends StatelessWidget {
@@ -334,7 +341,7 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: Text(
-        context.watch<Store1>().name,
+        context.watch<Store2>().name,
         style: style.appBarTextStyle,
       )),
       body: Row(
@@ -351,6 +358,12 @@ class Profile extends StatelessWidget {
             child:
                 !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
           ),
+          ElevatedButton(onPressed: () {
+            context.read<Store1>().getData();
+            context.watch<Store1>().profileImage.forEach((element) {
+              print(element);
+            });
+          }, child: Text("사진 가져오기"))
         ],
         mainAxisAlignment: MainAxisAlignment.spaceAround,
       ),
