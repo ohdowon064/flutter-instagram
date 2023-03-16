@@ -332,7 +332,10 @@ class Profile extends StatelessWidget {
       )),
       body: Row(
         children: [
-          Icon(Icons.person),
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+          ),
           Text('팔로워 ${context.watch<Store1>().follower}명'),
           ElevatedButton(
             onPressed: () {
@@ -342,7 +345,7 @@ class Profile extends StatelessWidget {
                 !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
           ),
         ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
       ),
     );
   }
