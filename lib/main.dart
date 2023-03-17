@@ -315,6 +315,7 @@ class Store1 extends ChangeNotifier {
     var result = await http
         .get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
     profileImage = jsonDecode(result.body);
+    print(profileImage);
     notifyListeners();
   }
 
@@ -347,13 +348,14 @@ class Profile extends StatelessWidget {
       )),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: ProfileHeader()
-          ),
+          SliverToBoxAdapter(child: ProfileHeader()),
           SliverGrid(
               delegate: SliverChildBuilderDelegate(
-                (c, i) => Container(color: Colors.red),
-                childCount: 20,
+                (c, i) => Container(
+                    child: context.watch<Store1>().profileImage.length > 0
+                        ? Image.network(context.watch<Store1>().profileImage[i])
+                        : CircularProgressIndicator()),
+                childCount: 6,
               ),
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)),
