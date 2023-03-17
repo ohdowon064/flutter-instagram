@@ -344,29 +344,39 @@ class Profile extends StatelessWidget {
         context.watch<Store2>().name,
         style: style.appBarTextStyle,
       )),
-      body: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.grey,
-          ),
-          Text('팔로워 ${context.watch<Store1>().follower}명'),
-          ElevatedButton(
-            onPressed: () {
-              context.read<Store1>().follow();
-            },
-            child:
-                !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
-          ),
-          ElevatedButton(onPressed: () {
-            context.read<Store1>().getData();
-            context.watch<Store1>().profileImage.forEach((element) {
-              print(element);
-            });
-          }, child: Text("사진 가져오기"))
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-      ),
+      body: ProfileHeader(),
+    );
+  }
+}
+
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: Colors.grey,
+        ),
+        Text('팔로워 ${context.watch<Store1>().follower}명'),
+        ElevatedButton(
+          onPressed: () {
+            context.read<Store1>().follow();
+          },
+          child:
+          !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
+        ),
+        ElevatedButton(onPressed: () {
+          context.read<Store1>().getData();
+          context.watch<Store1>().profileImage.forEach((element) {
+            print(element);
+          });
+        }, child: Text("사진 가져오기"))
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
     );
   }
 }
