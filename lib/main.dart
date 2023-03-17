@@ -312,7 +312,8 @@ class Store1 extends ChangeNotifier {
   var profileImage = [];
 
   getData() async {
-    var result = await http.get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
+    var result = await http
+        .get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
     profileImage = jsonDecode(result.body);
     notifyListeners();
   }
@@ -344,11 +345,21 @@ class Profile extends StatelessWidget {
         context.watch<Store2>().name,
         style: style.appBarTextStyle,
       )),
-      body: ProfileHeader(),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(),
+          SliverGrid.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+            itemBuilder: (c, i) {
+              return Container(color: Colors.grey);
+            },
+            itemCount: 3,
+          ),
+        ],
+      ),
     );
   }
 }
-
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({Key? key}) : super(key: key);
@@ -366,15 +377,16 @@ class ProfileHeader extends StatelessWidget {
           onPressed: () {
             context.read<Store1>().follow();
           },
-          child:
-          !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
+          child: !context.watch<Store1>().clicked ? Text("팔로우") : Text("언팔로우"),
         ),
-        ElevatedButton(onPressed: () {
-          context.read<Store1>().getData();
-          context.watch<Store1>().profileImage.forEach((element) {
-            print(element);
-          });
-        }, child: Text("사진 가져오기"))
+        ElevatedButton(
+            onPressed: () {
+              context.read<Store1>().getData();
+              context.watch<Store1>().profileImage.forEach((element) {
+                print(element);
+              });
+            },
+            child: Text("사진 가져오기"))
       ],
       mainAxisAlignment: MainAxisAlignment.spaceAround,
     );
