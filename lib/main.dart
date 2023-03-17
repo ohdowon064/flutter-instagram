@@ -347,14 +347,16 @@ class Profile extends StatelessWidget {
       )),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(),
-          SliverGrid.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-            itemBuilder: (c, i) {
-              return Container(color: Colors.grey);
-            },
-            itemCount: 3,
+          SliverToBoxAdapter(
+            child: ProfileHeader()
           ),
+          SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (c, i) => Container(color: Colors.red),
+                childCount: 20,
+              ),
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)),
         ],
       ),
     );
